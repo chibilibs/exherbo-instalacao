@@ -6,7 +6,7 @@ De fato, o Exherbo Linux é uma distro de você chorar enquanto instala, os cria
 Eu passei um sufoco essa madrugada tentando dar boot, meu amigo tinha conseguido, porém congelou na hora da inicialização do Kernel.<br><br>
 Se eu disser somente: "agora faça isso, depois isso.." é que nem eu sei o que seria exatamente, mas eu sei que funciona e funcionou comigo! :laughing:
 
-Se você for novo no Linux, evite essa distribuição, **por enquanto** isso aqui não é pra você, melhore suas habilidades e especialize! Use um debian-based, arch e volte aqui quando tiver uma boa carga.<br>
+Se você for novo no Linux, evite essa distribuição, **por enquanto** isso aqui não é pra você, melhore suas habilidades e especialize! Use um debian-based, ou outra distro, volte aqui quando tiver uma boa carga. Se você for bem-aventurado, Arch-Raíz user, boa sorte pra você também!<br>
 
 Até então o próprio usuário de Gentoo passa dificuldade (Eu por exemplo, :laughing:)<br>
 É complicado, **mas eu sei que você vai conseguir!**<br>
@@ -129,9 +129,14 @@ Não vou me estender muito aqui, a ideia era ensinar somente a instalação bás
 `echo "HostnamePika!!!" >> /etc/hostname`<br>
 `passwd` Hiper-mega senha da nasa pro root! Ideia: 123 é uma senha forte.<br>
 Crie um link simbólico pra sua localização:
-`ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime`
+`ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime`<br>
+**Em breve mais coisas da pós-Instalação...**<br><br>
 
+**`10 - Fim`**<br>
+Se você chegou até aqui, e conseguir bootar, eu te parabenizo! Você é um usuário expert :sunglasses:!!<br>
+`reboot && sacrifice a goat && pray`<br><br>
+Boa sorte, amigo.
 
-
+<h3>Manual feito por Sigma (https://github.com/Sigmw)</h3>
 
 
