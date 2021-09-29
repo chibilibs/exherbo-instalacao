@@ -7,7 +7,7 @@ Eu passei um sufoco essa madrugada tentando dar boot, meu amigo tinha conseguido
 
 Se você for novo no Linux, evite essa distribuição, **por enquanto** isso aqui não é pra você, melhore suas habilidades e especialize! Use um debian-based, arch e volte aqui quando tiver uma boa carga.<br>
 
-Até então o próprio usuário de Gentoo passa dificuldade (Eu, por exemplo, haha.)<br>
+Até então o próprio usuário de Gentoo passa dificuldade (Eu por exemplo, :laughing:)<br>
 É complicado, **mas eu sei que você vai conseguir!**<br>
 
 **Então segue aqui um tutorial descomplicado, baseado em wikis e na própria página de instalação do Exherbo:**
@@ -58,4 +58,35 @@ Após a instalação, vamos fazer o checksum:<br>
 `curl -O https://dev.exherbo.org/stages/sha1sum && grep exherbo-x86_64-pc-linux-gnu-current.tar.xz sha1sum | sha1sum -c`<br>
 Se estiver tudo certo com o checksum, prossiga, se não, retorne e instale novamente.<br>
 Extraia o sistema:<br>
-`tar xJpf exherbo*xz`
+`tar xJpf exherbo*xz`<br>
+Arrume o fstab:<br>
+`genfstab -U /mnt/exherbo > /mnt/exherbo/etc/fstab`<br><br>
+
+`5 - Entrando no chroot!`<br>
+Agora, você irá de vez entrar no sistema, via chroot.<br>
+Vamos então montar as partes essenciais do sistema para que nada dê erro:<br>
+`mount -o rbind /dev /mnt/exherbo/dev/`<br>
+`mount -o rbind /sys /mnt/exherbo/sys/`<br>
+`mount /dev/sda1 /mnt/exherbo/boot/` (Montando justamente, até então considerável o boot, no /boot)<br><br>
+Tenha certeza que o sistema vá resolver a internet, ele puxa a Internet do LiveCD, portanto só precisa de resolver:<br>
+`cp /etc/resolv.conf /mnt/exherbo/etc/resolv.conf`<br>
+
+Agora é hora de "go to deep!"<br>
+`env -i TERM=$TERM SHELL=/bin/bash HOME=$HOME $(which chroot) /mnt/exherbo /bin/bash`<br>
+<h4>Bem-vindo ao Exherbo Linux :rocket::rocket:</h4><br>
+Após estar dentro do seu sistema, atualize o /etc/profile:<br>
+`source /etc/profile` <br>
+Voce pode colocar de maneira opcional, simbolizar que é um chroot:<br>
+ `export PS1="(chroot) $PS1" `<br><br>
+
+`5 - Atualize o instalador`<br><br>
+Tenha certeza que o Paludis (Gerenciador de pacotes do Exherbo, pode ser chamado de cave também.)<br>
+`cd /etc/paludis && vim bashrc && vim *conf`<br><br>
+Um exemplo nessas configurações são as threads de compilação, por padrão é 2, defina diante do seu computador.<br>
+Após feita a configuração de um dos .conf, no vim é `:n`, que pula pro próximo, se alterou algo é `:wn`<br><br>
+Agora você pode atualizar o sim, o instalador:<br>
+`cave sync`<br><br>
+
+`6 - Baixando, configurando e compilando o Kernel.`<br><br>
+Nessa parte, a configuração do kernel vai depender muito do seu hardware, as configurações serão feitas por você.<br>
+Baixe o Kernel que você quiser no https://kernel.org, release, LTS...<br>
