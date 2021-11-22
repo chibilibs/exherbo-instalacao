@@ -112,8 +112,6 @@ Agora, instale o grub no dispositivo /dev/sda (Não é /dev/sda1, 2.. Se trata d
 `grub-install /dev/sda`<br>
 Gere o arquivo de configuração do grub:<br>
 `grub-mkconfig -o /boot/grub/grub.cfg`<br>
-Instale o boot do Systemd:<br>
-`bootctl install`
 Agora:<br>
 `cave resolve --execute --skip-phase test sys-boot/dracut`<br>
 Copie o kernel no diretório apropriado:<br>
