@@ -5,6 +5,8 @@ De fato, o Exherbo Linux é uma distro de você chorar enquanto instala, os cria
 
 Eu passei um sufoco quando tentei instalar, um amigo tinha conseguido, porém congelou na hora da inicialização do Kernel.<br><br>
 Um tempo depois consegui de forma bem sucedida fazer a instalação do mesmo, segue a screenshot:
+![image](https://user-images.githubusercontent.com/89428643/167930416-740ed2b5-5fdd-4edf-bd21-16443fae97d3.png)
+
 
 Se você for novo no Linux, evite essa distribuição, **por enquanto**, melhore suas habilidades e especialize-se! Use uma distribuição baseada no debian, ou outra, enfim. 
 volte aqui quando tiver uma boa carga. Se você for bem-aventurado... Boa sorte!<br>
@@ -119,7 +121,7 @@ O que você precisa obrigatoriamente reinstalar é o Systemd, pra gerar um ID de
 `cave resolve --execute --preserve-world --skip-phase test sys-apps/systemd`<br><br>
 Agora, instale o systemd-boot na partição /dev/sda1, montada em /boot:<br>
 `bootctl install --esp-path=/boot`<br>
-Crie uma entrada que inicie a vmlinuz, o initramfs e o micro-code, caso você tenha instalado. (O da intel é o pacote intel-microcode).<br>
+Crie uma entrada que inicie a vmlinuz, o initramfs e o micro-code, caso você tenha instalado. (O da intel é o pacote intel-microcode).<br><br>
 `vim /boot/loader/entries/exherbo.conf`<br>
 ```bash
 title Exherbo Linux
@@ -127,12 +129,14 @@ linux /vmlinuz-xxx-xxx
 initrd /initramfs-xxx-xxx
 /initrd /microcode.cpio # Se houver e você instalou.
 options root=/dev/sda2 rw
-```<br>
+```
+<br>
+
 `vim /boot/loader/loader.conf`<br>
 ```
 default exherbo
 timeout 3
-```<br>
+```
 Instale isso aqui também:<br>
 `cave resolve hardware -1x`<br>
 `cave sync x-hardware`<br>
