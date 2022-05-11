@@ -1,4 +1,4 @@
-# Instalação Exherbo Linux PT-BR (SOMENTE BIOS/LEGACY) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+# Instalação Exherbo Linux PT-BR (BRANCH UEFI) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 Aprenda a instalar uma das distribuições mais difíceis do mundo Linux.
 
 De fato, o Exherbo Linux é uma distro de você chorar enquanto instala, os criadores acham a instalação do Gentoo **fácil**.<br>
@@ -23,18 +23,20 @@ Após finalmente inicializar seu LiveCD via Pendrive, etc.. Você irá preparar 
 
 `cfdisk /dev/sdX (Ou, se sua tecnologia for nvme... /dev/nvme0n1) -z`<br>
 
-Crie uma label do tipo DOS, com somente uma partição primária, de tamanho inteiro do disco, você deve selecionar ela como *bootable*
+Crie uma label do tipo GPT, com duas partições primárias, a primeira de (~500MB), com o tipo ***EFI System***, e outra do tipo ***Linux Filesystem***, de tamanho inteiro do disco.
 
 Agora, precisamos formatar a partição:
 
-`mkfs.ext4 /dev/sda1`<br><br><br>
+`mkfs.vfat -F32 /dev/sda1`<br><br><br>
+`mkfs.ext4 /dev/sda2`<br><br><br>
 
 **`3 - Montando a partição root e colocando o sistema nela`**<br>
 
 Agora que todas a partição foi formatada corretamente, vamos montar a partição **root** e colocar o Exherbo Linux nela:
 
 `mkdir /mnt/exherbo` Crie essa pasta, é onde será montado o /dev/sda1<br><br>
-`mount /dev/sda1 /mnt/exherbo` Agora foi montada a partição root.<br><br>
+`mount /dev/sda2 /mnt/exherbo` Agora foi montada a partição root.<br><br>
+Por ora não montaremos a partição /dev/sda1.<br><br>
 `cd /mnt/exherbo` Por fim, entre na pasta.<br><br>
 
 **`4 - Baixando o sistema`**<br>
@@ -54,11 +56,17 @@ Extraia o sistema:<br>
 Arrume seu fstab:<br>
 `genfstab -U /mnt/exherbo > /mnt/exherbo/etc/fstab`<br><br>
 
+
+Agora, monte a partição do tipo EFI /dev/sda1:<br>
+`mount /dev/sda1 /mnt/exherbo/boot`<br><br>
+
+
 **`5 - Entrando no chroot!`**<br>
 Agora, você irá de vez entrar no sistema, via chroot.<br>
 Vamos então montar as partes essenciais do sistema para que nada dê erro:<br>
-`mount -o rbind /dev /mnt/exherbo/dev/`<br>
-`mount -o rbind /sys /mnt/exherbo/sys/`<br>
+`mount --rbind /dev /mnt/exherbo/dev/`<br>
+`mount --rbind /sys /mnt/exherbo/sys/`<br>
+`mount --rbind /proc /mnt/exherbo/proc/`<br>
 Tenha certeza que o sistema vá resolver a internet, ele puxa a Internet do LiveCD, portanto só precisa de resolver:<br>
 `cp /etc/resolv.conf /mnt/exherbo/etc/resolv.conf`<br>
 
@@ -76,7 +84,8 @@ Tenha certeza que o Paludis (Gerenciador de pacotes do Exherbo) esteja configura
 `cd /etc/paludis && vim bashrc && vim *conf`<br><br>
 Leia em https://paludis.exherbo.org, a forma correta para configura cada um dos arquivos, no mais você pode:<br>
 Em bashrc inserir a flag MAKEOPTS="-jX" (X o número de threads).<br>
-Inserir em options.conf: `sys-apps/coreutils xattr`, isso irá adicionar suporte para atributos de arquivos extendidos, que alguns outros pacotes vão precisar usar.
+Inserir em options.conf: `sys-apps/coreutils xattr`, isso irá adicionar suporte para atributos de arquivos extendidos, que alguns outros pacotes vão precisar usar.<br><br>
+Você está na branch UEFI, você precisa compilar o sytemd com a flag EFI, vamos usar systemd-boot. Coloque em options.conf também: `sys-apps/systemd efi`<br><br>
 Após feita a configuração dos arquivo de configuração, no vim é `:n`, que pula pro próximo, se alterou algo é `:wn`<br><br>
 Agora você pode atualizar sim, o instalador:<br>
 `cave resolve paludis -x`<br><br>
@@ -97,19 +106,33 @@ Agora:<br>
 `make modules_install`<br>
 E então, finalmente...<br>
 `make install`<br><br>
+
+Agora, gere o seu initramfs:<br>
+`kernel-install add <versão do kernel> /boot/vmlinuz-versão-kernel`<br><br>
+_Ex: `kernel-install add 5.14.8 /boot/vmlinuz-5.14.8`_<br><br>
+
 **`8 - Faça bootavel:`**<br>
 
 Ah! Você pode optar reinstalar todos os pacotes do sistema com:<br><br>
 `cave resolve world -c` É importante recompilar o conjunto world (main packages) e o -c é flag complete, para que atualize o sistema (Baixado de uma tarball provavelmente desatualizada.)<br><br>
 O que você precisa obrigatoriamente reinstalar é o Systemd, pra gerar um ID de máquina válida:<br>
 `cave resolve --execute --preserve-world --skip-phase test sys-apps/systemd`<br><br>
-Agora, instale o grub no dispositivo /dev/sda (Não é /dev/sda1, 2.. Se trata do **dispositivo**):<br>
-`grub-install /dev/sda`<br>
-Gere o arquivo de configuração do grub:<br>
-`grub-mkconfig -o /boot/grub/grub.cfg`<br>
-Agora, gere o seu initramfs:<br>
-`kernel-install add <versão do kernel> /boot/vmlinuz-versão-kernel`<br><br>
-_Ex: `kernel-install add 5.14.8 /boot/vmlinuz-5.14.8`_<br><br>
+Agora, instale o systemd-boot na partição /dev/sda1, montada em /boot:<br>
+`bootctl install --esp-path=/boot`<br>
+Crie uma entrada que inicie a vmlinuz, o initramfs e o micro-code, caso você tenha instalado. (O da intel é o pacote intel-microcode).<br>
+`vim /boot/loader/entries/exherbo.conf`<br>
+```bash
+title Exherbo Linux
+linux /vmlinuz-xxx-xxx
+initrd /initramfs-xxx-xxx
+/initrd /microcode.cpio # Se houver e você instalou.
+options root=/dev/sda2 rw
+```<br>
+`vim /boot/loader/loader.conf`<br>
+```
+default exherbo
+timeout 3
+```<br>
 Instale isso aqui também:<br>
 `cave resolve hardware -1x`<br>
 `cave sync x-hardware`<br>
