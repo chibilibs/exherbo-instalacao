@@ -3,44 +3,38 @@ Aprenda a instalar uma das distribuições mais difíceis do mundo Linux.
 
 De fato, o Exherbo Linux é uma distro de você chorar enquanto instala, os criadores acham a instalação do Gentoo **fácil**.<br>
 
-Eu passei um sufoco essa madrugada tentando dar boot, meu amigo tinha conseguido, porém congelou na hora da inicialização do Kernel.<br><br>
-Se eu disser somente: "agora faça isso, depois isso.." é que nem eu sei o que seria exatamente, mas eu sei que funciona e funcionou comigo! :laughing:
+Eu passei um sufoco quando tentei instalar, um amigo tinha conseguido, porém congelou na hora da inicialização do Kernel.<br><br>
+Um tempo depois consegui de forma bem sucedida fazer a instalação do mesmo, segue a screenshot:
 
-Se você for novo no Linux, evite essa distribuição, **por enquanto** isso aqui não é pra você, melhore suas habilidades e especialize! Use um debian-based, ou outra distro, volte aqui quando tiver uma boa carga. Se você for bem-aventurado, Arch-Raíz user, boa sorte pra você também!<br>
+Se você for novo no Linux, evite essa distribuição, **por enquanto**, melhore suas habilidades e especialize-se! Use uma distribuição baseada no debian, ou outra, enfim. 
+volte aqui quando tiver uma boa carga. Se você for bem-aventurado... Boa sorte!<br>
 
-Até então o próprio usuário de Gentoo passa dificuldade (Eu por exemplo, :laughing:)<br>
-É complicado, **mas eu sei que você vai conseguir!**<br>
 
-**Então segue aqui um tutorial descomplicado, baseado em wikis e na própria página de instalação do Exherbo:**
+**Então segue aqui um tutorial, baseado em wikis, minha experiência e na própria página de instalação do Exherbo:**
 
 **`1 - Baixe um LiveCD`**<br>
 Bom, você irá precisar usar um LiveCD para fazer a instalação do Exherbo Linux.
-Não, o Exherbo não é uma ISO! O Exherbo é um .tar.xz com todo o sistema, o LiveCD servirá para configurar ele em seu HD.
+Não, o Exherbo não é uma ISO! O Exherbo é uma tarball (um .tar.xz) com todo o sistema, o LiveCD servirá para configurar ele em seu disco.
 Você pode usar um Arch Live ISO, ou o SystemRescueHD, são os que eu recomendo.
 
-**`2 - Preparando o seu HD`**<br>
-Após finalmente inicializar seu LiveCD via Pendrive, etc.. Você irá preparar o seu HD.
+**`2 - Preparando o seu Disco`**<br>
+Após finalmente inicializar seu LiveCD via Pendrive, etc.. Você irá preparar o seu disco.
 Ìnicialize o gerenciador de partições do sistema, como de praxe, usaremos o cfdisk.
 
-`cfdisk /dev/sda`<br>
+`cfdisk /dev/sdX (Ou, se sua tecnologia for nvme... /dev/nvme0n1) -z`<br>
 
-Crie uma partição de boot (~500MB), a partição root (/) (>=4GB), e outras partições como /home, caso queira.
-Criaremos também uma partição de swap. Salve e saia.
+Crie uma label do tipo DOS, com somente uma partição primária, de tamanho inteiro do disco, você deve selecionar ela como *bootable*
 
-Agora, precisamos formatar as partições:
-Considerando /dev/sda1 como **boot**, /dev/sda2 como o **swap** e /dev/sda3 como **root**, faremos:
+Agora, precisamos formatar a partição:
 
-`mkfs.ext2 /dev/sda1`<br>
+`mkfs.ext4 /dev/sda1`<br><br><br>
 
-`mkswap /dev/sda2 && swapon /dev/sda2`<br>
-
-`mkfs.ext4 /dev/sda3`<br><br><br>
 **`3 - Montando a partição root e colocando o sistema nela`**<br>
 
-Agora que todas as partições foram criadas e devidamente formatas, vamos montar a partição **root** e colocar o Exherbo Linux nela:
+Agora que todas a partição foi formatada corretamente, vamos montar a partição **root** e colocar o Exherbo Linux nela:
 
-`mkdir /mnt/exherbo` Crie essa pasta, é onde será montado o /dev/sda3 (Até então considerado como a partição root)<br><br>
-`mount /dev/sda3 /mnt/exherbo` Agora foi montada a partição root.<br><br>
+`mkdir /mnt/exherbo` Crie essa pasta, é onde será montado o /dev/sda1<br><br>
+`mount /dev/sda1 /mnt/exherbo` Agora foi montada a partição root.<br><br>
 `cd /mnt/exherbo` Por fim, entre na pasta.<br><br>
 
 **`4 - Baixando o sistema`**<br>
@@ -57,7 +51,7 @@ Após a instalação, vamos fazer o checksum:<br>
 Se estiver tudo certo com o checksum, prossiga, se não, retorne e instale novamente.<br>
 Extraia o sistema:<br>
 `tar xJpf exherbo*xz`<br>
-Arrume o fstab:<br>
+Arrume seu fstab:<br>
 `genfstab -U /mnt/exherbo > /mnt/exherbo/etc/fstab`<br><br>
 
 **`5 - Entrando no chroot!`**<br>
@@ -65,39 +59,40 @@ Agora, você irá de vez entrar no sistema, via chroot.<br>
 Vamos então montar as partes essenciais do sistema para que nada dê erro:<br>
 `mount -o rbind /dev /mnt/exherbo/dev/`<br>
 `mount -o rbind /sys /mnt/exherbo/sys/`<br>
-`mount /dev/sda1 /mnt/exherbo/boot/` (Montando justamente, até então considerável o boot, no /boot)<br><br>
 Tenha certeza que o sistema vá resolver a internet, ele puxa a Internet do LiveCD, portanto só precisa de resolver:<br>
 `cp /etc/resolv.conf /mnt/exherbo/etc/resolv.conf`<br>
 
-Agora é hora de "go to deep!"<br>
+Agora é hora de entrar em seu novo sistema.<br>
 `env -i TERM=$TERM SHELL=/bin/bash HOME=$HOME $(which chroot) /mnt/exherbo /bin/bash`<br>
 <h4>Bem-vindo ao Exherbo Linux :rocket::rocket:</h4><br>
-Após estar dentro do seu sistema, atualize o /etc/profile:<br>
+Após dentro do sistema, atualize seu profile:<br>
 
 `source /etc/profile` <br>
 Voce pode colocar de maneira opcional, simbolizar que é um chroot:
  `export PS1="(chroot) $PS1" `<br>
 
 **`6 - Atualize o instalador`**<br>
-Tenha certeza que o Paludis (Gerenciador de pacotes do Exherbo, pode ser chamado de cave também.)<br>
+Tenha certeza que o Paludis (Gerenciador de pacotes do Exherbo) esteja configurado<br>
 `cd /etc/paludis && vim bashrc && vim *conf`<br><br>
-Um exemplo nessas configurações são as threads de compilação, por padrão é 2, defina diante do seu computador.<br>
-Após feita a configuração de um dos .conf, no vim é `:n`, que pula pro próximo, se alterou algo é `:wn`<br><br>
-Agora você pode atualizar o sim, o instalador:<br>
+Leia em https://paludis.exherbo.org, a forma correta para configura cada um dos arquivos, no mais você pode:<br>
+Em bashrc inserir a flag MAKEOPTS="-jX" (X o número de threads).<br>
+Inserir em options.conf: `sys-apps/coreutils xattr`, isso irá adicionar suporte para atributos de arquivos extendidos, que alguns outros pacotes vão precisar usar.
+Após feita a configuração dos arquivo de configuração, no vim é `:n`, que pula pro próximo, se alterou algo é `:wn`<br><br>
+Agora você pode atualizar sim, o instalador:<br>
 `cave resolve paludis -x`<br><br>
 `cave sync`<br><br>
 
 (Para instalar um pacote no Paludis é fácil, como exemplo vamos instalar o neovim:<br>
 `cave resolve nvim -x`<br>
-Ele não vai executar sem o -x)
+(Ele não vai executar sem o -x, e talvez essa compilação necessite de algumas flags.)
 
 **`7 - Baixando, configurando e compilando o Kernel.`**<br>
 Nessa parte, a configuração do kernel vai depender muito do seu hardware, as configurações serão feitas por você.<br>
 Baixe o Kernel que você quiser no https://kernel.org, release, LTS...<br>
 Por uma questão de organização, manda pro o kernel pro`/usr/src`<br><br>
-`make menuconfig` Aqui é o cão! Pesquise por si próprio sobre **como configurar um kernel**.<br>
+`make menuconfig` Pesquise por si próprio sobre **como configurar um kernel**.<br>
 Feita as configurações, compile-o:<br>
-`make` (Dependendo do seu processador e threads que você passou no passo 6 em `vim *.conf`, podem demorar de **2 minutos a 6 horas**.<br>
+`make` (Você pode passar um número de threads específico (`make -j36` é o meu caso), dependendo do seu processador e threads, podem demorar de **2 minutos a 6 horas**.<br>
 Agora:<br>
 `make modules_install`<br>
 E então, finalmente...<br>
@@ -105,16 +100,14 @@ E então, finalmente...<br>
 **`8 - Faça bootavel:`**<br>
 
 Ah! Você pode optar reinstalar todos os pacotes do sistema com:<br><br>
-`cave resolve world -c` Por que isso existe? Eu também não sei, mas demora um tempinho se você não tiver muitas threads, risos.<br><br>
+`cave resolve world -c` É importante recompilar o conjunto world (main packages) e o -c é flag complete, para que atualize o sistema (Baixado de uma tarball provavelmente desatualizada.)<br><br>
 O que você precisa obrigatoriamente reinstalar é o Systemd, pra gerar um ID de máquina válida:<br>
 `cave resolve --execute --preserve-world --skip-phase test sys-apps/systemd`<br><br>
 Agora, instale o grub no dispositivo /dev/sda (Não é /dev/sda1, 2.. Se trata do **dispositivo**):<br>
 `grub-install /dev/sda`<br>
 Gere o arquivo de configuração do grub:<br>
 `grub-mkconfig -o /boot/grub/grub.cfg`<br>
-Agora:<br>
-`cave resolve --execute --skip-phase test sys-boot/dracut`<br>
-Copie o kernel no diretório apropriado:<br>
+Agora, gere o seu initramfs:<br>
 `kernel-install add <versão do kernel> /boot/vmlinuz-versão-kernel`<br><br>
 _Ex: `kernel-install add 5.14.8 /boot/vmlinuz-5.14.8`_<br><br>
 Instale isso aqui também:<br>
