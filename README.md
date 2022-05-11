@@ -7,6 +7,7 @@ De fato, o Exherbo Linux é uma distro de você chorar enquanto instala, os cria
 
 Eu passei um sufoco quando tentei instalar, um amigo tinha conseguido, porém congelou na hora da inicialização do Kernel.<br><br>
 Um tempo depois consegui de forma bem sucedida fazer a instalação do mesmo, segue a screenshot:
+![image](https://user-images.githubusercontent.com/89428643/167930354-b7ecdad1-53b2-441b-8bfc-caabcd204f6f.png)
 
 Se você for novo no Linux, evite essa distribuição, **por enquanto**, melhore suas habilidades e especialize-se! Use uma distribuição baseada no debian, ou outra, enfim. 
 volte aqui quando tiver uma boa carga. Se você for bem-aventurado... Boa sorte!<br>
