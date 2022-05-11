@@ -1,5 +1,7 @@
-# Instalação Exherbo Linux PT-BR (SOMENTE BIOS/LEGACY) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+# Instalação Exherbo Linux PT-BR (BRANCH BIOS/LEGACY) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 Aprenda a instalar uma das distribuições mais difíceis do mundo Linux.
+
+Se você utiliza ***UEFI***, mude a branch para UEFI.
 
 De fato, o Exherbo Linux é uma distro de você chorar enquanto instala, os criadores acham a instalação do Gentoo **fácil**.<br>
 
@@ -57,8 +59,9 @@ Arrume seu fstab:<br>
 **`5 - Entrando no chroot!`**<br>
 Agora, você irá de vez entrar no sistema, via chroot.<br>
 Vamos então montar as partes essenciais do sistema para que nada dê erro:<br>
-`mount -o rbind /dev /mnt/exherbo/dev/`<br>
-`mount -o rbind /sys /mnt/exherbo/sys/`<br>
+`mount --rbind /dev /mnt/exherbo/dev/`<br>
+`mount --rbind /sys /mnt/exherbo/sys/`<br>
+`mount --rbind /proc /mnt/exherbo/proc`<br>
 Tenha certeza que o sistema vá resolver a internet, ele puxa a Internet do LiveCD, portanto só precisa de resolver:<br>
 `cp /etc/resolv.conf /mnt/exherbo/etc/resolv.conf`<br>
 
@@ -76,7 +79,7 @@ Tenha certeza que o Paludis (Gerenciador de pacotes do Exherbo) esteja configura
 `cd /etc/paludis && vim bashrc && vim *conf`<br><br>
 Leia em https://paludis.exherbo.org, a forma correta para configura cada um dos arquivos, no mais você pode:<br>
 Em bashrc inserir a flag MAKEOPTS="-jX" (X o número de threads).<br>
-Inserir em options.conf: `sys-apps/coreutils xattr`, isso irá adicionar suporte para atributos de arquivos extendidos, que alguns outros pacotes vão precisar usar.
+Inserir em options.conf: `sys-apps/coreutils xattr`, isso irá adicionar suporte para atributos de arquivos extendidos, que alguns outros pacotes vão precisar usar.<br>
 Após feita a configuração dos arquivo de configuração, no vim é `:n`, que pula pro próximo, se alterou algo é `:wn`<br><br>
 Agora você pode atualizar sim, o instalador:<br>
 `cave resolve paludis -x`<br><br>
