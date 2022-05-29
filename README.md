@@ -137,18 +137,27 @@ options root=/dev/sda2 rw
 default exherbo
 timeout 3
 ```
-Instale isso aqui também:<br>
-`cave resolve hardware -1x`<br>
-`cave sync x-hardware`<br>
+
+Instale isso aqui também (Repositório hardware e linux-firmware):<br>
+`cave resolve repository/hardware -x`<br>
+`cave sync`<br>
 `cave resolve -x firmware/linux-firmware -x`<br><br>
 
 **`9 - Pós-Instalação`**<br>
 Não vou me estender muito aqui, a ideia era ensinar somente a instalação básica, o resto é com você :wink:<br>
 `echo "HostnamePika!!!" >> /etc/hostname`<br>
+Também altere a linguagem do teclado dentro do ambiente framebuffer:<br>
+`echo KEYMAP=br-abnt2 > /etc/vconsole.conf`<br>
+E a linguagem do sistema pra português também... (Exherbo GLIBC)<br>
+`localedef -i pt_BR -f UTF-8 pt_BR`<br>
+`echo LANG="pt_BR.UTF-8" > /etc/env.d/99locale`<br>
 `passwd` Hiper-mega senha da nasa pro root! Ideia: 123 é uma senha forte.<br>
 Crie um link simbólico pra sua localização:
 `ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime`<br>
-**Em breve mais coisas da pós-Instalação...**<br><br>
+Habilite estes serviços do systemd:<br>
+`systemctl enable getty@` Este é essencial, você ativa o framebuffer ao boot.<br>
+`systemctl enable dhcpcd`<br>
+`systemctl enable iwd` Se você usa wifi.<br>
 
 **`10 - Fim`**<br>
 Se você chegou até aqui, e conseguir bootar, eu te parabenizo! Você é um usuário expert :sunglasses:!!<br>
