@@ -55,12 +55,13 @@ Após a instalação, vamos fazer o checksum:<br>
 Se estiver tudo certo com o checksum, prossiga, se não, retorne e instale novamente.<br>
 Extraia o sistema:<br>
 `tar xJpf exherbo*xz`<br>
+Agora, monte a partição do tipo EFI /dev/sda1:<br>
+`mount /dev/sda1 /mnt/exherbo/boot`<br><br>
 Arrume seu fstab:<br>
 `genfstab -U /mnt/exherbo > /mnt/exherbo/etc/fstab`<br><br>
 
 
-Agora, monte a partição do tipo EFI /dev/sda1:<br>
-`mount /dev/sda1 /mnt/exherbo/boot`<br><br>
+
 
 
 **`5 - Entrando no chroot!`**<br>
@@ -109,6 +110,9 @@ Agora:<br>
 E então, finalmente...<br>
 `make install`<br><br>
 
+Precisamos gerar o initramfs, mas antes disso precisamos compilar o dracut:<br>
+`cave resolve dracut -x`
+
 Agora, gere o seu initramfs:<br>
 `kernel-install add <versão do kernel> /boot/vmlinuz-versão-kernel`<br><br>
 _Ex: `kernel-install add 5.14.8 /boot/vmlinuz-5.14.8`_<br><br>
@@ -127,7 +131,7 @@ Crie uma entrada que inicie a vmlinuz, o initramfs e o micro-code, caso você te
 title Exherbo Linux
 linux /vmlinuz-xxx-xxx
 initrd /initramfs-xxx-xxx
-/initrd /microcode.cpio # Se houver e você instalou.
+initrd /microcode.cpio # Se houver e você instalou.
 options root=/dev/sda2 rw
 ```
 <br>
